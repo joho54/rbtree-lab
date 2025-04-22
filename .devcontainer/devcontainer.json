@@ -1,0 +1,14 @@
+{
+    "remoteUser": "root",
+    "name": "Ubuntu ARM64 C 개발 환경",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "extensions": [
+        "ms-vscode.cpptools",
+        "webfreak.debug"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    }
+}

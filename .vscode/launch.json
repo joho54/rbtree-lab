@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    { // root
+      "name": "Run driver (root)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/driver",
+      "cwd": "${workspaceFolder}",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "make build-root"
+    },
+    { // src
+      "name": "Run driver (src)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/driver",
+      "cwd": "${workspaceFolder}",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "make build-src"
+    },
+    { // test
+      "name": "Run tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/test/test_runner",
+      "cwd": "${workspaceFolder}",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "make build-test"
+    }
+  ]
+}
