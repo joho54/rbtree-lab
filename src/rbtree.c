@@ -11,37 +11,37 @@
 ////////////////// auxilary functions //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-static void print_node_ascii(const node_t *node, const node_t *nil, int indent)
-{
-  if (node == nil)
-    return;
+// static void print_node_ascii(const node_t *node, const node_t *nil, int indent)
+// {
+//   if (node == nil)
+//     return;
 
-  if (node->right != nil)
-    print_node_ascii(node->right, nil, indent + INDENT_STEP);
+//   if (node->right != nil)
+//     print_node_ascii(node->right, nil, indent + INDENT_STEP);
 
-  for (int i = 0; i < indent; i++)
-    printf(" ");
+//   for (int i = 0; i < indent; i++)
+//     printf(" ");
 
-  // 노드 출력: [keyR] or [keyB]
-  printf("[%d%s]\n", node->key, node->color == RBTREE_RED ? "R" : "B");
+//   // 노드 출력: [keyR] or [keyB]
+//   printf("[%d%s]\n", node->key, node->color == RBTREE_RED ? "R" : "B");
 
-  if (node->left != nil)
-    print_node_ascii(node->left, nil, indent + INDENT_STEP);
-}
+//   if (node->left != nil)
+//     print_node_ascii(node->left, nil, indent + INDENT_STEP);
+// }
 
-void print_rbtree_ascii(const rbtree *t)
-{
-  printf("\n=== RB Tree ASCII View ===\n");
-  if (!t || !t->root || t->root == t->nil)
-  {
-    printf("[empty]\n");
-    return;
-  }
-  print_node_ascii(t->root, t->nil, 0);
-  printf("===========================\n\n");
-}
+// void print_rbtree_ascii(const rbtree *t)
+// {
+//   printf("\n=== RB Tree ASCII View ===\n");
+//   if (!t || !t->root || t->root == t->nil)
+//   {
+//     printf("[empty]\n");
+//     return;
+//   }
+//   print_node_ascii(t->root, t->nil, 0);
+//   printf("===========================\n\n");
+// }
 
-void print_rbtree_ascii(const rbtree *t);
+// void print_rbtree_ascii(const rbtree *t);
 
 void insert_fixup(rbtree *t, node_t *z)
 {
@@ -182,6 +182,11 @@ rbtree *new_rbtree(void)
 void delete_rbtree(rbtree *t)
 {
   // TODO: reclaim the tree nodes's memory
+  while (t->root != t->nil)
+  {
+    rbtree_erase(t, t->root);
+  }
+  free(t->nil);
   free(t);
 }
 
@@ -245,7 +250,14 @@ node_t *rbtree_min(const rbtree *t)
 node_t *rbtree_max(const rbtree *t)
 {
   // TODO: implement find
-  return t->root; 
+  node_t *cur = t->root;
+  node_t *prev = cur;
+  while (cur != t->nil)
+  {
+    prev = cur;
+    cur = cur->right;
+  }
+  return prev; 
 }
 
 int rbtree_erase(rbtree *t, node_t *z)
@@ -286,6 +298,7 @@ int rbtree_erase(rbtree *t, node_t *z)
   }
   if (y_original_color == RBTREE_BLACK)
     delete_fixup(t, x);
+  free(z);
   return 0;
 }
 
@@ -345,7 +358,7 @@ void delete_fixup(rbtree *t, node_t *x)
         {
           w->right->color = RBTREE_BLACK;
           w->color = RBTREE_RED;
-          right_rotate(t, w);
+          left_rotate(t, w);
           w = x->parent->left;
         }
         w->color = x->parent->color; // case 4
@@ -365,5 +378,20 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
   // array의 메모리 공간은 이 함수를 부르는 쪽에서 준비하고 그 크기를 n으로 알려줍니다.
   // 따로 준비할 필요는 없겠네.
   // TODO: implement to_array
+  int *idx = malloc(sizeof(int));
+  *idx = 0; // 역참조 값을 0으로 초기화
+  inorder(t, arr, t->root, idx, n);
+  free(idx);
   return 0;
+}
+
+void inorder(const rbtree *t, key_t *arr, node_t *cur, int *idx, int n)
+{
+  if (cur == t->nil) return;
+  if (*idx > n) return;
+  inorder(t, arr, cur->left, idx, n);
+  
+  arr[*idx] = cur->key; // 배열에 추가.
+  (*idx)++;
+  inorder(t, arr, cur->right, idx, n);
 }

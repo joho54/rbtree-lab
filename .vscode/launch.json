@@ -20,10 +20,10 @@
       "preLaunchTask": "make build-src"
     },
     { // test
-      "name": "Run tests",
+      "name": "Run tests (test)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/test/test_runner",
+      "program": "${workspaceFolder}/test/test-rbtree",
       "cwd": "${workspaceFolder}",
       "miDebuggerPath": "/usr/bin/gdb",
       "preLaunchTask": "make build-test"
